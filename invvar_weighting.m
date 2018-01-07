@@ -5,6 +5,8 @@ function [p_FE, p_RE, z_FE, z_RE] = invvar_weighting(effects, vars)
 %      vars         - array of estimated variance of effect size (one per subject)
 % OUT: p_FE, p_RE   - p value of H_0 : mean effect == 0 , for fixed and
 %                       random effects analysis
+%
+% Copyright (c) 2018 Irene Winkler and Stefan Haufe
 
 effects = effects(:); 
 vars = vars(:); 

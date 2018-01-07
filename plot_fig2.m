@@ -1,3 +1,5 @@
+% Copyright (c) 2018 Irene Winkler and Stefan Haufe
+
 % fig 2A (Fixed Effects, S=5)
 N_rep = 100; %number of repetitions of the simulation
 N_vp = 5; %number of subjects

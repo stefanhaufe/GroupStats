@@ -4,6 +4,8 @@ data_0 = cell(1, N_vp); data_1_tmp = cell(1, N_vp);
 
 %% Generate Data 
 %determine random number of epochs per subject and class
+% Copyright (c) 2018 Irene Winkler and Stefan Haufe
+
 N_epochs = randi(N_epochs_range, [N_vp, 2]);
 
 %generate data for class 0 and class 1 

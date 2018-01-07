@@ -1,3 +1,5 @@
+% Copyright (c) 2018 Irene Winkler and Stefan Haufe
+
 % load EEG data
 load data/fig4_data
 

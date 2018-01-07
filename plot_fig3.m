@@ -1,3 +1,5 @@
+% Copyright (c) 2018 Irene Winkler and Stefan Haufe
+
 % fig 3A (Fixed Effects, S=20, non-Gaussian)
 N_rep = 100; %number of repetitions of the simulation
 N_vp = 20; %number of subjects

@@ -1,3 +1,7 @@
+% Copyright (c) 2018 Irene Winkler and Stefan Haufe
+
+addpath external
+
 % generate new data
 
 % number of subjects/groups
