@@ -1,10 +1,10 @@
+% Copyright (c) 2018 Irene Winkler and Stefan Haufe
 
 mu_diffs = zeros(N_vp, length(mu_diff)); %mean difference per subject 
 data_0 = cell(1, N_vp); data_1_tmp = cell(1, N_vp);  
 
 %% Generate Data 
 %determine random number of epochs per subject and class
-% Copyright (c) 2018 Irene Winkler and Stefan Haufe
 
 N_epochs = randi(N_epochs_range, [N_vp, 2]);
 
@@ -33,6 +33,13 @@ for idx_vp = 1:N_vp
     data_0{idx_vp} = data_0{idx_vp} + mu;
     data_1_tmp{idx_vp} = data_1_tmp{idx_vp} + mu;
 
-    %mean differences for each subject (same for fixed effect model)
-    mu_diffs(idx_vp, :) = mu_diff + randn(1, length(mu_diff))* sigma_rand; 
+    %mean differences for each subject in random effects model (but same for fixed effect model)
+    if var_corr
+      % mean difference linear function of standard deviation
+      mu_diffs(idx_vp, :) = mu_diff + var_corr*((s-sigma_epochs_range(1))/(sigma_epochs_range(2) - sigma_epochs_range(1))-0.5) ...
+        *sigma_rand / (sqrt(1/12));
+    else
+      % mean difference independent of standard deviation 
+      mu_diffs(idx_vp, :) = mu_diff + randn(1, length(mu_diff))* sigma_rand;    
+    end
 end

@@ -23,7 +23,7 @@ for idx_nrep = 1:N_rep
     fprintf('.')
     
     generate_data;
-    
+      
 %     % or load pre-generated data
 %     load(['data/fig' figname '_data_rep' num2str(idx_nrep)])
     

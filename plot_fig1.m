@@ -2,6 +2,8 @@
 
 addpath external
 
+clear all; close all;
+
 % generate new data
 
 % number of subjects/groups
@@ -82,7 +84,7 @@ set(gca, 'xtick', 1:2, 'xticklabel', {'X', 'Y'})
 [h p, ci, stats] = ttest2(reshape(x(:, :, 1), [], 1), reshape(x(:, :, 2), [], 1), 'vartype', 'unequal');
 title(['p = ' num2str(p, 2)])
 
-% export_fig(['pooling1'], '-r300', '-a2'); 
+% export_fig(['figures/fig1A'], '-r300', '-a2'); 
 
 % linear regression and correlation for individual and pooled data
 figure;
@@ -141,6 +143,6 @@ plot(xval,yhat+ci,'r-.');
 plot(xval,yhat-ci,'r-.');
 plot(xval,yhat,'b','linewidth',2);
  
-% export_fig(['pooling2'], '-r300', '-a2'); 
+% export_fig(['figures/fig1B'], '-r300', '-a2'); 
 
   

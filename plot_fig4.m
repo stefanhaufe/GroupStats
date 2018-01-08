@@ -1,5 +1,7 @@
 % Copyright (c) 2018 Irene Winkler and Stefan Haufe
 
+clear all; close all;
+
 % load EEG data
 load data/fig4_data
 
@@ -141,7 +143,8 @@ xlim([0 800])
 title('Gaussian vs. Nonparametric')
 
 
-% export_fig(['erp1'], '-r300', '-a2'); 
+export_fig(['figures/fig4'], '-r300', '-a2'); 
+
 
 
 

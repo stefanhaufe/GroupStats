@@ -1,5 +1,7 @@
 % Copyright (c) 2018 Irene Winkler and Stefan Haufe
 
+clear all; close all;
+
 % fig 3A (Fixed Effects, S=20, non-Gaussian)
 N_rep = 100; %number of repetitions of the simulation
 N_vp = 20; %number of subjects
@@ -15,17 +17,27 @@ vp_mu_range = 6; %each subject may have a different mean (average for both class
                  %if set to 0, each subject has the same mean
 sigma_rand = 0; %st.d. of mu_diff per subject 
                   %if 0 - fixed effect model, each subject has the same mean difference.
-
+var_corr = 0; % correlation of variance with effect size (mean difference)
+              %  0 - null              
+              %  1 - positive
+              % -1 - negative    
+              
 figname = '3A';
 main_simulation
+title('Fixed Effect Model, Non-Gaussian')
+export_fig(['figures/fig3A'], '-r300', '-a2'); 
 
 % fig 3B (Random Effects, S=20, non-Gaussian)
 sigma_rand = 0.2;
 figname = '3B';
 main_simulation
+title('Random Effects Model, Non-Gaussian')
+export_fig(['figures/fig3B'], '-r300', '-a2'); 
 
 % fig 3C (Random Effects, S=20, Gaussian)
 % (same as Fig 2D)
 normal = 1;
-figname = '3C';
+figname = '2D';
 main_simulation
+title('Random Effects Model, Gaussian')
+export_fig(['figures/fig3C'], '-r300', '-a2'); 
