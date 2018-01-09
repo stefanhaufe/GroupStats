@@ -1,4 +1,4 @@
-% Copyright (c) 2018 Irene Winkler and Stefan Haufe
+% Copyright (c) 2018 Irene Dowding and Stefan Haufe
 
 addpath external
 

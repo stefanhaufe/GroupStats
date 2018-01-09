@@ -3,7 +3,7 @@
 % and generates a plot with the true mean difference on the x-axis and the 
 % H_O rejection rate on the y-axis. 
 
-% Copyright (c) 2018 Irene Winkler and Stefan Haufe
+% Copyright (c) 2018 Irene Dowding and Stefan Haufe
 
 %allocate storage space
 ps_stoufer = zeros(N_rep, length(mu_diff)); 

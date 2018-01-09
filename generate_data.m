@@ -1,4 +1,4 @@
-% Copyright (c) 2018 Irene Winkler and Stefan Haufe
+% Copyright (c) 2018 Irene Dowding and Stefan Haufe
 
 mu_diffs = zeros(N_vp, length(mu_diff)); %mean difference per subject 
 data_0 = cell(1, N_vp); data_1_tmp = cell(1, N_vp);  
