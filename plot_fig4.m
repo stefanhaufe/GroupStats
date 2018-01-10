@@ -117,7 +117,7 @@ hold on
 ax = gca;
 ax.ColorOrderIndex = 5;
 plot(erp_r{1}.t, abs(z_naive(:, 1)), 'linewidth', 2);
-legend('Equal Variance', 'Naive', 'Location','NorthWest')
+legend('Equal Weighting', 'Naive', 'Location','NorthWest')
 grid on
 set(gca, 'fontsize', 14)
 ylabel('|z|')
