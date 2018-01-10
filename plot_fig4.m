@@ -62,6 +62,7 @@ va_t = va1+va2;
 for ii = 1:size(me, 1)
   for jj = 1:size(me, 2)
     [p_FE_t(ii, jj), p_RE_t(ii, jj), z_FE_t(ii, jj), z_RE_t(ii, jj)] = invvar_weighting(me_t(ii, jj, :), va_t(ii, jj, :));
+    [p_FE_t_eq(ii, jj), p_RE_t_eq(ii, jj), z_FE_t_eq(ii, jj), z_RE_t_eq(ii, jj)] = equal_weighting(me_t(ii, jj, :), va_t(ii, jj, :));
   end
 end
 
@@ -77,7 +78,7 @@ set(0,'DefaultAxesColorOrder',ColOrd([2 1 3:7], :))
 % inverse-variance weighting
 figure(1);clf;
 subplot(2, 2, 1)
-plot(erp_r{1}.t, abs(z_RE_t), 'linewidth', 2);
+plot(erp_r{1}.t, abs(z_RE_t_eq), 'linewidth', 2);
 legend('EEG', 'EMG', 'Location','NorthWest')
 hold on
 ax = gca;
@@ -94,11 +95,11 @@ title('EEG vs. EMG')
 % random vs. fixed effect analysis using parametric subject-level tests and
 % inverse-variance weighting
 subplot(2, 2, 2)
-plot(erp_r{1}.t, abs(z_RE_t(:, 1)), 'linewidth', 2);
+plot(erp_r{1}.t, abs(z_RE_t_eq(:, 1)), 'linewidth', 2);
 hold on
 ax = gca;
 ax.ColorOrderIndex = 3;
-plot(erp_r{1}.t, abs(z_FE_t(:, 1)), 'linewidth', 2);
+plot(erp_r{1}.t, abs(z_FE_t_eq(:, 1)), 'linewidth', 2);
 legend('Random', 'Fixed', 'Location','NorthWest')
 grid on
 set(gca, 'fontsize', 14)
@@ -111,12 +112,12 @@ title('Random vs. Fixed Effects')
 % random effect analysis using parametric subject-level tests and
 % inverse-variance weighting VS. naive t-test on subject-means
 subplot(2, 2, 3)
-plot(erp_r{1}.t, abs(z_RE_t(:, 1)), 'linewidth', 2);
+plot(erp_r{1}.t, abs(z_RE_t_eq(:, 1)), 'linewidth', 2);
 hold on
 ax = gca;
 ax.ColorOrderIndex = 5;
 plot(erp_r{1}.t, abs(z_naive(:, 1)), 'linewidth', 2);
-legend('Inverse Variance', 'Naive', 'Location','NorthWest')
+legend('Equal Variance', 'Naive', 'Location','NorthWest')
 grid on
 set(gca, 'fontsize', 14)
 ylabel('|z|')
@@ -128,11 +129,11 @@ title('InvVar vs. Naive Summary Stat')
 % parametric (mean-diff) VS. nonparametric (AUC) subject-level test using
 % random effect analysis using inverse-variance weighting 
 subplot(2, 2, 4)
-plot(erp_r{1}.t, abs(z_RE_t(:, 1)), 'linewidth', 2);
+plot(erp_r{1}.t, abs(z_RE_t_eq(:, 1)), 'linewidth', 2);
 hold on
 ax = gca;
 ax.ColorOrderIndex = 6;
-plot(erp_r{1}.t, abs(z_RE(:, 1)), 'linewidth', 2);
+plot(erp_r{1}.t, abs(z_RE_eq(:, 1)), 'linewidth', 2);
 legend('Mean Diff', 'AUC', 'Location','NorthWest')
 grid on
 set(gca, 'fontsize', 14)
