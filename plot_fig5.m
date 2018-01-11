@@ -2,54 +2,150 @@
 
 clear all; close all;
 
-% fig 2A (Fixed Effects, S=5)
-N_rep = 100; %number of repetitions of the simulation
-N_vp = 20; %number of subjects
-N_epochs_range = [50 80]; % range of number of sample size per subject and class (uniformly drawn)
-mu_diff = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3];  %mean difference of two classes 
-                                                 %(x-axis of the generated plot)
-normal = 1; %if 1, data is from a normal distribution, otherwise from an F-distribution
-sigma_epochs_range = [0.5 2]; %each subject s may have a different st.d. sigma_s around their class means. 
-                     %The parameters sets the range of sigma_s per subject 
-                     % e.g. [1 1] - each subject has sigma_s 1
-                     % e.g. [0.5 2] each subjects sigma_s is uniformy drawn from [0.5, 2] 
-vp_mu_range = 6; %each subject may have a different mean (average for both classes)
-                 %if set to 0, each subject has the same mean
-sigma_rand = 0.2; %st.d. of mu_diff per subject 
-                  %if 0 - fixed effect model, each subject has the same mean difference.
+% load EEG data
+load data/fig5_data
 
-var_corr = -1; % correlation of variance with effect size (mean difference)
-              %  0 - null              
-              %  1 - positive
-              % -1 - negative          
+% proccess data of each subject
+pool1 = [];
+pool2 = [];
+for ivp = 1:18
 
-% Negative correlation between mean difference and variance in the random
-% effects model. Negative mean differences have high variance and thus get
-% down-weighted in the average, leading to an overestimation of the
-% population effect and a high false-positive-rate if inverse variance
-% weighting is used.
-figname = '5A';
-main_simulation
-title('Random Effects Model, Neg. Variance-Meandiff Corr.')
-export_fig(['figures/fig5A'], '-r300', '-a2'); 
+  % indices of emergency braking and normal driving epochs
+  in1 = find(erp_r{ivp}.y(1, :));
+  in2 = find(erp_r{ivp}.y(2, :));
 
-% Positive correlation between mean difference and variance in the random
-% effects model. Positive mean differences have high variance and thus get
-% down-weighted in the average, leading to an underestimation of the
-% population effect if inverse variance weighting is used. This can even
-% lead to the spurious detection of an opposite effect direction 
-% (negative mean difference).
-var_corr = 1;
-figname = '5B';
-main_simulation
-title('Random Effects Model, Pos. Variance-Meandiff Corr.')
-export_fig(['figures/fig5B'], '-r300', '-a2'); 
+  % area under the ROC curve related to distinguishing the two
+  % epoch types, evaluated for the two channels and each time point after
+  % triggering of the emergency situation
+  for ii = 1:size(erp_r{ivp}.x, 1)
+    for jj = 1:size(erp_r{ivp}.x, 2)
+      [~, ~, ~, me(ii, jj, ivp)] = ... 
+                perfcurve( vec(erp_r{ivp}.y(1, :)), vec(erp_r{ivp}.x(ii, jj, :)), 1);
+    end
+  end
+  
+  n1 = length(in1); n2 =  length(in2);     
+  
+  % variance of the AUC according to Hanley 1982
+  A = me(:, :, ivp); 
+  Q1 = A./(2-A); 
+  Q2 = 2*A.^2./(1+A);
+  va(:, :, ivp) = (A.*(1-A) + (n1-1)*(Q1-A.^2) +(n2-1)*(Q2 - A.^2))./(n1*n2); 
+  
+  % means and variances epoch type 1 for subject-wise parametric test (AUC)
+  me1(:, :, ivp) = mean(erp_r{ivp}.x(:, :, in1), 3);
+  va1(:, :, ivp) = var(erp_r{ivp}.x(:, :, in1), [], 3)/size(erp_r{ivp}.x(:, :, in1), 3);
+  
+  % means and variances epoch type 2 for subject-wise parametric test (mean
+  % difference)
+  me2(:, :, ivp) = mean(erp_r{ivp}.x(:, :, in2), 3);
+  va2(:, :, ivp) = var(erp_r{ivp}.x(:, :, in2), [], 3)/size(erp_r{ivp}.x(:, :, in2), 3);
+  
+  % collect pooled data
+  pool1 = cat(3, pool1, erp_r{ivp}.x(:, :, in1));
+  pool2 = cat(3, pool2, erp_r{ivp}.x(:, :, in2));
+end
 
-% No correlation between mean difference and variance in the random
-% effects model. Here, inverse variance weighting works well. Same as 
-% Figure 2D.
-var_corr = 0;
-figname = '2D';
-main_simulation
-title('Random Effects Model, No Variance-Meandiff Corr.')
-export_fig(['figures/fig5C'], '-r300', '-a2'); 
+% fixed and random effects analysis for subject-wise non-parametric statistic (AUC)
+me = me - 0.5; 
+for ii = 1:size(me, 1)
+  for jj = 1:size(me, 2)
+    [p_FE(ii, jj), p_RE(ii, jj), z_FE(ii, jj), z_RE(ii, jj)] = invvar_weighting(me(ii, jj, :), va(ii, jj, :));
+    [p_FE_eq(ii, jj), p_RE_eq(ii, jj), z_FE_eq(ii, jj), z_RE_eq(ii, jj)] = equal_weighting(me(ii, jj, :), va(ii, jj, :));
+  end
+end
+
+
+% fixed and random effects analysis for subject-wise mean difference (parametric)  
+me_t = me1-me2;
+va_t = va1+va2;
+for ii = 1:size(me, 1)
+  for jj = 1:size(me, 2)
+    [p_FE_t(ii, jj), p_RE_t(ii, jj), z_FE_t(ii, jj), z_RE_t(ii, jj)] = invvar_weighting(me_t(ii, jj, :), va_t(ii, jj, :));
+    [p_FE_t_eq(ii, jj), p_RE_t_eq(ii, jj), z_FE_t_eq(ii, jj), z_RE_t_eq(ii, jj)] = equal_weighting(me_t(ii, jj, :), va_t(ii, jj, :));
+  end
+end
+
+% naive t-test on subject means without considering variances
+[h, p, ci, stats] = ttest(me1, me2, 'dim', 3);
+z_naive = norminv(t_cdf(stats.tstat, stats.df(1)), 0, 1);
+
+% colors
+ColOrd = get(0,'DefaultAxesColorOrder');
+set(0,'DefaultAxesColorOrder',ColOrd([2 1 3:7], :))
+
+% EEG vs EMG discriminability based on parametric subject-level tests and
+% inverse-variance weighting
+figure(1);clf;
+subplot(2, 2, 1)
+plot(erp_r{1}.t, abs(z_RE_t_eq), 'linewidth', 2);
+legend('EEG', 'EMG', 'Location','NorthWest')
+hold on
+ax = gca;
+% ax.ColorOrderIndex = 1;
+% plot(erp_r{1}.t, abs(z_RE), 'linewidth', 2);
+grid on
+set(gca, 'fontsize', 14)
+ylabel('|z|')
+xlabel('ms')
+ylim([0 20])
+xlim([0 800])
+title('EEG vs. EMG')
+
+% random vs. fixed effect analysis using parametric subject-level tests and
+% inverse-variance weighting
+subplot(2, 2, 2)
+plot(erp_r{1}.t, abs(z_RE_t_eq(:, 1)), 'linewidth', 2);
+hold on
+ax = gca;
+ax.ColorOrderIndex = 3;
+plot(erp_r{1}.t, abs(z_FE_t_eq(:, 1)), 'linewidth', 2);
+legend('Random', 'Fixed', 'Location','NorthWest')
+grid on
+set(gca, 'fontsize', 14)
+ylabel('|z|')
+xlabel('ms')
+ylim([0 20])
+xlim([0 800])
+title('Random vs. Fixed Effects')
+
+% random effect analysis using parametric subject-level tests and
+% inverse-variance weighting VS. naive t-test on subject-means
+subplot(2, 2, 3)
+plot(erp_r{1}.t, abs(z_RE_t_eq(:, 1)), 'linewidth', 2);
+hold on
+ax = gca;
+ax.ColorOrderIndex = 5;
+plot(erp_r{1}.t, abs(z_naive(:, 1)), 'linewidth', 2);
+legend('Equal Weighting', 'Naive', 'Location','NorthWest')
+grid on
+set(gca, 'fontsize', 14)
+ylabel('|z|')
+xlabel('ms')
+ylim([0 10])
+xlim([0 800])
+title('InvVar vs. Naive Summary Stat')
+
+% parametric (mean-diff) VS. nonparametric (AUC) subject-level test using
+% random effect analysis using inverse-variance weighting 
+subplot(2, 2, 4)
+plot(erp_r{1}.t, abs(z_RE_t_eq(:, 1)), 'linewidth', 2);
+hold on
+ax = gca;
+ax.ColorOrderIndex = 6;
+plot(erp_r{1}.t, abs(z_RE_eq(:, 1)), 'linewidth', 2);
+legend('Mean Diff', 'AUC', 'Location','NorthWest')
+grid on
+set(gca, 'fontsize', 14)
+ylabel('|z|')
+xlabel('ms')
+ylim([0 10])
+xlim([0 800])
+title('Gaussian vs. Nonparametric')
+
+
+export_fig(['figures/fig5'], '-r300', '-a2'); 
+
+
+
+
