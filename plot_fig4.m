@@ -105,7 +105,7 @@ grid on
 set(gca, 'fontsize', 14)
 ylabel('|z|')
 xlabel('ms')
-ylim([0 40])
+ylim([0 20])
 xlim([0 800])
 title('Random vs. Fixed Effects')
 
