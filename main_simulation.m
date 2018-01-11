@@ -22,10 +22,10 @@ data_1 = cell(1, N_vp);
 for idx_nrep = 1:N_rep
     fprintf('.')
     
-    generate_data;
+%     generate_data;
       
-%     % or load pre-generated data
-%     load(['data/fig' figname '_data_rep' num2str(idx_nrep)])
+    % or load pre-generated data
+    load(['data/fig' figname '_data_rep' num2str(idx_nrep)])
     
     %% Apply different tests
     for idx_mu = 1:length(mu_diff) %for each true mean difference
@@ -96,6 +96,7 @@ figure
 plot(mu_diff, mean(ps_stoufer < 0.05), 'k+-.', 'LineWidth', linewidth)
 legend_strings = {legend_strings{:}, 'Stouffer'};
 
+box on
 hold on
 
 plot(mu_diff, mean(ps_meanDiff_FE < 0.05), 'x-.', 'LineWidth', linewidth,'Color', [0.8500    0.3250    0.0980])
