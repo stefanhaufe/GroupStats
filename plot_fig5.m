@@ -124,7 +124,7 @@ ylabel('|z|')
 xlabel('ms')
 ylim([0 10])
 xlim([0 800])
-title('InvVar vs. Naive Summary Stat')
+title('Equal Weighting vs. Naive')
 
 % parametric (mean-diff) VS. nonparametric (AUC) subject-level test using
 % random effect analysis using inverse-variance weighting 
