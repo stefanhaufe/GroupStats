@@ -143,8 +143,7 @@ ylim([0 10])
 xlim([0 800])
 title('Gaussian vs. Nonparametric')
 
-
-export_fig(['figures/fig5'], '-r300', '-a2'); 
+% export_fig(['figures/fig5'], '-r300', '-a2'); 
 
 
 

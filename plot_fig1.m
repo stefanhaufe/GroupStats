@@ -4,6 +4,9 @@ addpath external
 
 clear all; close all;
 
+% number of bootstrap samples
+Nboot = 1000;
+
 % generate new data
 
 % number of subjects/groups
@@ -21,8 +24,8 @@ gdiff = reshape([-1 1], 1, 1, 2);
 % data (m samples, ng groups, two classes) 
 x = 2*randn(ng, m, 2) + repmat(gme, 1, m, 2) + 1*repmat(gdiff, ng, m); 
 
-% % or load the original data used in the paper
-% load('fig1_data', 'ng', 'm', 'gme', 'gdiff', 'x');
+% or load the original data used in the paper
+load('data/fig1_data', 'ng', 'm', 'gme', 'gdiff', 'x');
 
 % t-test on individual subjects vs. t-test on pooled data of all subjects
 figure; 
@@ -111,12 +114,17 @@ for ii = 1:ng
   title({['r = ' num2str(r, 2)], ['p = ' num2str(p, 2)]}')
 
   ax = get(gca, 'xlim');
-  xval = linspace(ax(1), ax(2), 1000)';
-  [p, yhat, ci ] = polypredci(xx, yy, 1, 0.95, xval); 
+  xval = linspace(ax(1), ax(2), 1000)';  
+   
+  % bootstrap
+  for iboot = 1:Nboot
+    ind = ceil(m*rand(m, 1));
+    yhat(:, iboot) = [xval ones(1000, 1)]*([xx(ind) ones(m, 1)]\yy(ind));
+  end
 
-  plot(xval,yhat+ci,'r-.'); 
-  plot(xval,yhat-ci,'r-.');
-  plot(xval,yhat,'b','linewidth',2);
+  plot(xval,prctile(yhat', 97.5),'b-.'); 
+  plot(xval,prctile(yhat', 2.5),'b-.');
+  plot(xval,mean(yhat, 2),'b','linewidth',2);
    
 end
 
@@ -137,11 +145,16 @@ title({['r = ' num2str(r, 2)], ['p = ' num2str(p, 2)]}')
 
 ax = get(gca, 'xlim');
 xval = linspace(ax(1), ax(2), 1000)';
-[p, yhat, ci ] = polypredci(xx, yy, 1, 0.95, xval); 
 
-plot(xval,yhat+ci,'r-.'); 
-plot(xval,yhat-ci,'r-.');
-plot(xval,yhat,'b','linewidth',2);
+%bootstrap
+for iboot = 1:Nboot
+  ind = ceil(m*rand(m, 1));
+  yhat(:, iboot) = [xval ones(1000, 1)]*([xx(ind) ones(m, 1)]\yy(ind));
+end
+  
+plot(xval,prctile(yhat', 97.5),'b-.'); 
+plot(xval,prctile(yhat', 2.5),'b-.');
+plot(xval,mean(yhat, 2),'b','linewidth',2);
  
 % export_fig(['figures/fig1B'], '-r300', '-a2'); 
 

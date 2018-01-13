@@ -30,7 +30,7 @@ var_corr = -1; % correlation of variance with effect size (mean difference)
 figname = '4A';
 main_simulation
 title('Random Effects Model, Neg. Variance-Meandiff Corr.')
-export_fig(['figures/fig4A'], '-r300', '-a2'); 
+% export_fig(['figures/fig4A'], '-r300', '-a2'); 
 
 % Positive correlation between mean difference and variance in the random
 % effects model. Positive mean differences have high variance and thus get
@@ -42,13 +42,4 @@ var_corr = 1;
 figname = '4B';
 main_simulation
 title('Random Effects Model, Pos. Variance-Meandiff Corr.')
-export_fig(['figures/fig4B'], '-r300', '-a2'); 
-
-% % No correlation between mean difference and variance in the random
-% % effects model. Here, inverse variance weighting works well. Same as 
-% % Figure 2D.
-% var_corr = 0;
-% figname = '2D';
-% main_simulation
-% title('Random Effects Model, No Variance-Meandiff Corr.')
-% export_fig(['figures/fig5C'], '-r300', '-a2'); 
+% export_fig(['figures/fig4B'], '-r300', '-a2'); 

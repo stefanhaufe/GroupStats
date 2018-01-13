@@ -25,14 +25,14 @@ var_corr = 0; % correlation of variance with effect size (mean difference)
 figname = '3A';
 main_simulation
 title('Fixed Effect Model, Non-Gaussian')
-export_fig(['figures/fig3A'], '-r300', '-a2'); 
+% export_fig(['figures/fig3A'], '-r300', '-a2'); 
 
 % fig 3B (Random Effects, S=20, non-Gaussian)
 sigma_rand = 0.2;
 figname = '3B';
 main_simulation
 title('Random Effects Model, Non-Gaussian')
-export_fig(['figures/fig3B'], '-r300', '-a2'); 
+% export_fig(['figures/fig3B'], '-r300', '-a2'); 
 
 % fig 3C (Random Effects, S=20, Gaussian)
 % (same as Fig 2D)
@@ -40,4 +40,4 @@ normal = 1;
 figname = '2D';
 main_simulation
 title('Random Effects Model, Gaussian')
-export_fig(['figures/fig3C'], '-r300', '-a2'); 
+% export_fig(['figures/fig3C'], '-r300', '-a2'); 
